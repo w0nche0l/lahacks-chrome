@@ -29,6 +29,7 @@ function setUpListeners(){
 		var regexp = new RegExp(websitedata[i].reg);
 		var result = regexp.test(location);
 		if(result){
+			console.log("regexp stuff found!");
 			setUpListener(websitedata[i].id, websitedata[i].pw, websitedata[i].submit);
 		}
 	}
