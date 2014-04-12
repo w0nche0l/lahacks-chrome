@@ -46,7 +46,10 @@ var saveAllTabs= function(index){
       chrome.windows.remove(windowArr[i].id);
     }
     //post request to add saved tabs 
-    ret
+    
+
+
+
   });
 }
 
