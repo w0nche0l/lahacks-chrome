@@ -60,10 +60,7 @@ function loginGet(){
       req.setRequestHeader(header, variables[header]);
     }
   }
-
-
   //what do we do when we get the data from the server
-  
   req.send();
 }
 
@@ -81,16 +78,12 @@ function getUrlVars()
     return vars;
 }
 
-
 function getAllTabData(){
   chrome.tabs.query(null, function(tabs){
-
+    console.log(tabs);
   });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  var vars = getUrlVars();
-  for(var i =  0; i  < vars.length; ++i){
-    console.log(vars);
-  }
+  getAllTabData();
 });
