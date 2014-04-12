@@ -73,4 +73,15 @@ var utils = {};
   escape = function(value){
     return encodeURIComponent(value).replace('%20', '+');
   };
+  //http://stackoverflow.com/questions/4656843/jquery-get-querystring-from-url
+  utils.getUrlVars = function(){
+      var vars = {}, hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+      for(var i = 0; i < hashes.length; i++){
+          hash          = hashes[i].split('=');
+          vars[hash[0]] = hash[1];
+      }
+      return vars;
+  };
+
 }());

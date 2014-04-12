@@ -19,5 +19,9 @@
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
-  }
+  },
+
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0OQAtty8cfmIjpHIIBJTiUFdCGUpl56XHjBIaUgrppU+Hd/qvyuMmNw/bALWbFaLNTYjSFuc5wAefCLnivkz0ERhpgm3iTPvySf1V8z1Ewy7xZu23Nx2ZJ0OcxB1PrqXfiOAjmBDYQU2bP8mLCHhtM5qj6jQC+RGPSqptkjMB1CVZaBl8KRsSZ8kXVh0yYeIhSNt0MtUpkAJTb8QANdugosV7lBToUIf8TKks71IgDSqiSZz6IvGojn9eTdZwgjimvAlbACTa0fHDY/Bmsfgajmr31ptb0zHNlNah10sm5yMfLF9oI16NiRNQQJ2n35zDqC7fFpxWqjTJWbL6SdRpwIDAQAB",
+
+  "content_security_policy": "script-src 'self' https://rdio.com; object-src 'self'"
 }
