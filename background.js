@@ -33,18 +33,24 @@ var loginListener = function(request, sender, sendResponse) {
 
 var saveAllTabs= function(index){
   chrome.windows.getAll(function(windowArr){
+
+    var windowData = new Array();
     for(var i = 0; i < windowArr.length; ++i){
+      windowData[i] = new Array();
       for(var j = 0; j < windowArr[i].tabs.length; ++j){
-        
+        windowData[i][j] = {
+          "url": windowArr[i].tabs[j].url,
+          "favicon": windowArr[i].tabs[j].favIconUrl
+        };
       }
+      chrome.windows.remove(windowArr[i].id);
     }
+    //post request to add saved tabs 
+    ret
   });
 }
 
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
 
-chrome.windows.getCurrent(function(window){
-	chrome.windows.remove(window.id);
-});
 
