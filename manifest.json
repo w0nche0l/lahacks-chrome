@@ -7,7 +7,7 @@
 
   "permissions": [
     "background", 
-    "tabs"
+    "tabs","http://*/*", "https://*/*"
   ],
     
   "background":{
