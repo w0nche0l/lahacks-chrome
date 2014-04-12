@@ -1,26 +1,3 @@
-var websitedata = [
-	{
-		reg: "facebook.com",
-		idfield: "#email",
-		pwfield: "#pass",
-		submit: "#loginbutton",
-    loginpage: "https://www.facebook.com/login.php"
-	},
-	{
-		reg:"google.com",
-		idfield: "#Email",
-		pwfield: "#Passwd",
-		submit: "#signIn",
-    loginpage: 
-	},
-  {
-    reg: "rdio.com",
-    idfield: "#username",
-    pwfield: "#password",
-    submit: "form.marketing .Form_Field_Button_Submit .button"
-  }
-];
-
 function setUpListener(id, pw, submit, website){
 	var idField = document.querySelector(id);
 	var pwField = document.querySelector(pw);

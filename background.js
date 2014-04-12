@@ -3,6 +3,9 @@ var setuplisteners = "var loc = window.location.href;"+
 
 var changeListener = function(tabId, changeInfo, tab){
 	if(changeInfo.status = "complete"){//changeInfo.url != undefined){
+    chrome.tabs.executeScript(tabId, {file:"data.js",runAt: "document_end"}, 
+      function(){
+    });
 		chrome.tabs.executeScript(tabId, {file:"listen.js",runAt: "document_end"}, 
 			function(){
 		});
@@ -31,7 +34,37 @@ var loginListener = function(request, sender, sendResponse) {
 	}
 }
 
-var saveAllTabs= function(index){
+// {
+//    "accounts"
+//       {
+//          "loginPage":"https://facebook.com/login.ph",
+//          "loginData"
+//             {
+//                "cssSelector":"#email",
+//                "data":"jteplitz602@gmail.com"
+//             },
+//             {
+//                "cssSelector":"#pass",
+//                "data":"pass"
+//             }
+//          ],
+//          "loginButton":"#login input"
+//       }
+//    ],
+//    "tabs"
+//       {
+//          "url":"facebook.com",
+//          "favicon":"favicon_url"
+//       },
+//       {
+//          "url":"google.com",
+//          "favicon":"google_favicon_url"
+//       }
+//    ]
+// }
+
+
+var saveWorkspace= function(index){
   chrome.windows.getAll(function(windowArr){
 
     var windowData = new Array();
@@ -46,10 +79,9 @@ var saveAllTabs= function(index){
       chrome.windows.remove(windowArr[i].id);
     }
     //post request to add saved tabs 
+
+
     
-
-
-
   });
 }
 
