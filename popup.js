@@ -88,7 +88,6 @@ function getAllTabData(){
   });
 }
 
-// Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
   var vars = getUrlVars();
   for(var i =  0; i  < vars.length; ++i){
