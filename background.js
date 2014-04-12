@@ -3,9 +3,9 @@ var setuplisteners = "var loc = window.location.href;"+
 
 var changeListener = function(tabId, changeInfo, tab){
 	if(changeInfo.url != undefined){
-		chrome.tabs.executeScript(tabId, {code:"listen.js",runAt: "document_end"}, 
+		chrome.tabs.executeScript(tabId, {file:"listen.js",runAt: "document_end"}, 
 			function(){
-				
+
 		});
 	}
 }
