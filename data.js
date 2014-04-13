@@ -11,12 +11,12 @@ var websitedata = [
 		idfield: "#Email",
 		pwfield: "#Passwd",
 		submit: "#signIn",
-    loginpage: 
+    	loginpage: "https://accounts.google.com"
 	},
-  {
-    reg: "rdio.com",
-    idfield: "#username",
-    pwfield: "#password",
-    submit: "form.marketing .Form_Field_Button_Submit .button"
-  }
-];
+  	{
+	    reg: "rdio.com",
+	    idfield: "#username",
+	    pwfield: "#password",
+	    submit: "form.marketing .Form_Field_Button_Submit .button"
+  	}
+]
