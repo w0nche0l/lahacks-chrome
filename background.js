@@ -65,6 +65,20 @@ var loginListener = function(request, sender, sendResponse) {
       loadTabs();
     }
   }
+  else if(request.requestType === "close"){
+
+    chrome.windows.getAll({populate: true}, function(windowArr){
+        console.log(windowArr); 
+        for(var i = 0; i < windowArr.length; ++i){
+          for(var j = 0; j < windowArr[i].tabs.length; ++j){
+            if(windowArr[i].tabs[j].url.indexOf("chrome-extension://")== 0)
+              chrome.tabs.remove(windowArr[i].tabs[j].id);
+          }
+
+          chrome.windows.remove(windowArr[i].id);
+        }
+    });
+  }
   else if(request.requestType === "restore"){
     loadUser(request.requestData);
     console.log("Restoring");

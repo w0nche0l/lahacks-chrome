@@ -16,7 +16,7 @@
         console.log("SHIIT", err);
       }
         console.log("Success", err, res);
-
+      close();
       chrome.runtime.sendMessage({requestType: 'close'}, 
         function(response) {
         console.log(response.farewell);
