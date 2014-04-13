@@ -140,4 +140,4 @@ chrome.runtime.onMessageExternal.addListener(function(msg, sender, cb){
   }
 });
 
-loadUser(exampleData);
+//loadUser(exampleData);
