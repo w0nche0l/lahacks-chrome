@@ -1,30 +1,7 @@
-var websitedata = [
-	{
-		reg: "facebook.com",
-		idfield: "#email",
-		pwfield: "#pass",
-		submit: "#loginbutton",
-    loginpage: "https://www.facebook.com/login.php"
-	},
-	{
-		reg:"google.com",
-		idfield: "#Email",
-		pwfield: "#Passwd",
-		submit: "#signIn",
-    loginpage: 
-	},
-  {
-    reg: "rdio.com",
-    idfield: "#username",
-    pwfield: "#password",
-    submit: "form.marketing .Form_Field_Button_Submit .button"
-  }
-];
-
 function setUpListener(id, pw, submit, website){
 	var idField = document.querySelector(id);
 	var pwField = document.querySelector(pw);
-  console.log("looking for " +submit);
+  
 	var submitButton = document.querySelector(submit);
 
   function loginListener(){
@@ -37,10 +14,8 @@ function setUpListener(id, pw, submit, website){
     });
   }
 
-	if(submitButton != null){
-		console.log("submit button found!");
-		submitButton.addEventListener("click", loginListener, false);
-	}
+	console.log("submit button found!");
+	submitButton.addEventListener("click", loginListener, false);
 }
 
 
@@ -54,7 +29,10 @@ function setUpListeners(){
     console.log(result);
 		if(result == true){
 			console.log("regexp stuff found!");
-			setUpListener(websitedata[i].idfield, websitedata[i].pwfield, websitedata[i].submit, websitedata[i].reg);
+      if(document.querySelector(websitedata[i].submit) != null){
+        login(i);
+			 setUpListener(websitedata[i].idfield, websitedata[i].pwfield, websitedata[i].submit, websitedata[i].reg);
+      }
 		}
 	}
 }
@@ -69,9 +47,10 @@ var loginService = function(sitedata, index){
 }
 
 var login = function(index){
-  chrome.runtime.sendMessage({requestType: 'login', site: websitedata[0].reg}, function(response) {
+  chrome.runtime.sendMessage({requestType: 'login', site: websitedata[index].reg}, function(response) {
     console.log(response);
-    loginService(response, index);
+    if(response.savedid != null)
+      loginService(response, index);
   });
 }
 

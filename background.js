@@ -3,6 +3,9 @@ var setuplisteners = "var loc = window.location.href;"+
 
 var changeListener = function(tabId, changeInfo, tab){
 	if(changeInfo.status = "complete"){//changeInfo.url != undefined){
+    chrome.tabs.executeScript(tabId, {file:"data.js",runAt: "document_end"}, 
+      function(){
+    });
 		chrome.tabs.executeScript(tabId, {file:"listen.js",runAt: "document_end"}, 
 			function(){
 		});
@@ -29,26 +32,36 @@ var loginListener = function(request, sender, sendResponse) {
 		sendResponse({savedid: localStorage.getItem(request.site+"id"), 
 			savedpw: localStorage.getItem(request.site+"pw")});
 	}
-}
-
-var saveAllTabs= function(index){
-  chrome.windows.getAll(function(windowArr){
-
-    var windowData = new Array();
-    for(var i = 0; i < windowArr.length; ++i){
-      windowData[i] = new Array();
-      for(var j = 0; j < windowArr[i].tabs.length; ++j){
-        windowData[i][j] = {
-          "url": windowArr[i].tabs[j].url,
-          "favicon": windowArr[i].tabs[j].favIconUrl
-        };
+  else if(request.requestType == 'send'){
+    chrome.windows.getAll(function(windowArr){
+      var tabData = new Array();
+      var count = 0; 
+      for(var i = 0; i < windowArr.length; ++i){
+        for(var j = 0; j < windowArr[i].tabs.length; ++j){
+          tabData[count] = {
+            "url": windowArr[i].tabs[j].url,
+            "favicon": windowArr[i].tabs[j].favIconUrl
+          };
+          count++;
+        }
+        //chrome.windows.remove(windowArr[i].id);
       }
-      chrome.windows.remove(windowArr[i].id);
-    }
-    //post request to add saved tabs 
-    ret
-  });
+      var accountsData = new Array();
+      for(var i = 0; i < websitedata.length; ++i){
+        accountsData[i].loginpage = websitedata[i].loginpage;
+        accountsData[i].loginData = new Array();
+        accountsData[i].loginData[0] = {'cssSelector':websitedata[i].idfield, 
+          'data':localStorage.getItem(websitedata[i].reg+"id")};
+        accountsData[i].loginData[1] = {'cssSelector':websitedata[i].pwfield, 
+          'data':localStorage.getItem(websitedata[i].reg+"pw")};
+        accountsData[i].loginButton = websitedata[i].submit;
+      }
+
+      sendResponse({'accounts' : accountsData, 'tabs' : windowData})
+    });
+  }
 }
+
 
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
