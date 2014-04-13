@@ -2,6 +2,7 @@ var setuplisteners = "var loc = window.location.href;"+
 	"console.log(loc);"
 var countpageloads = 0;
 var loginWindowId = -4;
+var spinnerWindowId = -5;
 var createTab;
 var numTabs; 
 var tabArray;
@@ -79,6 +80,7 @@ var loadTabs = function(){
   });
   countpageloads++;
   chrome.windows.remove(loginWindowId);
+  chrome.windows.remove(spinnerWindowId);
 }
 
 chrome.runtime.onConnect.addListener(function(port) {
