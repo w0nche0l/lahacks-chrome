@@ -155,11 +155,11 @@ var loadUser = function(userData){
   });
 
 
-  chrome.windows.create({}, function(newWindow){
+  chrome.windows.create({focused: false}, function(newWindow){
     chrome.windows.update(newWindow.id, { state: "maximized" })
     loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
-      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage}, createTab(i, userData));
+      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage, active:false}, createTab(i, userData));
     } 
     if(numTabs == 0)
       loadTabs();
