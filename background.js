@@ -78,16 +78,73 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 
+
 var loadUser = function(userData){
-  
-  for(var i = 0;  i < userData.accounts.length; ++i){
+  chrome.windows.create(null, function(newWindow){
+    for(var i = 0;  i < userData.accounts.length; ++i){
+      chrome.tabs.create({windowId:newWindow.id, url: userData.accounts[i].loginPage}, function(newTab){
+        //do some function here
+      });
+    }
 
-  }
-
-  for(var i = 0; i < userData.tabs.length; ++i){
-
-  }
+    for(var i = 0; i < userData.tabs.length; ++i){
+      chrome.tabs.create({windowId: newWindow.id, url: userData.tabs[i].url}, function(newTab){});
+    }
+  });
 }
+
+var exampleData = {
+   "accounts":[
+      {
+         "loginPage":"https://facebook.com/login.php",
+         "loginData":[
+            {
+               "cssSelector":"#email",
+               "data":"jteplitz602@gmail.com"
+            },
+            {
+               "cssSelector":"#pass",
+               "data":"pass"
+            }
+         ],
+         "loginButton":"#login input"
+      }
+   ],
+   "tabs":[
+      {
+         "url":"http://tumblr.com",
+         "favicon":"favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      },
+      {
+         "url":"http://qwantz.com",
+         "favicon":"google_favicon_url"
+      }
+   ]
+};
 
 
 chrome.runtime.onMessage.addListener(loginListener);
@@ -99,3 +156,4 @@ chrome.runtime.onMessageExternal.addListener(function(msg, sender, cb){
   }
 });
 
+loadUser(exampleData);
