@@ -61,11 +61,7 @@ var loginListener = function(request, sender, sendResponse) {
       receievedFromTab[sender.tab.id] = true;
     }
     if(countpageloads == numTabs){
-      chrome.windows.create({url: tabArray}, function(newWindow){
-        chrome.windows.update(newWindow.id, { state: "maximized" })
-      });
-      countpageloads++;
-      chrome.windows.remove(loginWindowId);
+      loadTabs();
     }
   }
   else if(request.requestType === "restore"){
@@ -75,6 +71,15 @@ var loginListener = function(request, sender, sendResponse) {
   }
 }
 
+
+var loadTabs = function(){
+  console.log("loading the tabs");
+  chrome.windows.create({url: tabArray}, function(newWindow){
+    chrome.windows.update(newWindow.id, { state: "maximized" })
+  });
+  countpageloads++;
+  chrome.windows.remove(loginWindowId);
+}
 
 chrome.runtime.onConnect.addListener(function(port) {
   console.assert(port.name == "data");
@@ -86,6 +91,8 @@ chrome.runtime.onConnect.addListener(function(port) {
         var count = 0; 
         for(var i = 0; i < windowArr.length; ++i){
           for(var j = 0; j < windowArr[i].tabs.length; ++j){
+            if(windowArr[i].tabs[j].url.indexOf("chrome-extension://")== 0)
+              continue;
             tabData[count] = {
               "url": windowArr[i].tabs[j].url,
               "favicon": windowArr[i].tabs[j].favIconUrl
@@ -151,7 +158,9 @@ var loadUser = function(userData){
     loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
       chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage}, createTab(i, userData));
-    }
+    } 
+    if(numTabs == 0)
+      loadTabs();
   });
 }
 
@@ -167,46 +176,6 @@ var createTab = function(j, userData){
         chrome.tabs.executeScript(newTab.id, {file: 'login.js', runAt: 'document_end'}, function(){});
   }
 };
-
-var exampleData = {
-   "accounts":[
-      {
-         "loginPage":"https://facebook.com/login.php",
-         "loginData":[
-            {
-               "cssSelector":"#email",
-               "data":"lahackstest@gmail.com"
-            },
-            {
-               "cssSelector":"#pass",
-               "data":"jayjayjay"
-            }
-         ],
-         "loginButton":"#loginbutton"
-      },
-      {
-        "loginPage":"https://accounts.google.com/ServiceLogin?sacu=1",
-        "loginData":[
-            {
-               "cssSelector":"#Email",
-               "data":"lahackstest@gmail.com"
-            },
-            {
-               "cssSelector":"#Passwd",
-               "data":"ddddddddd"
-            }
-        ],
-        "loginButton":"#signIn"
-      }
-   ],
-   "tabs":[
-      {
-         "url":"http://facebook.com",
-         "favicon":"favicon_url"
-      }
-   ]
-};
-
 
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
