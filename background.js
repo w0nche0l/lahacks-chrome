@@ -78,6 +78,18 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 
+var loadUser = function(userData){
+  
+  for(var i = 0;  i < userData.accounts.length; ++i){
+
+  }
+
+  for(var i = 0; i < userData.tabs.length; ++i){
+
+  }
+}
+
+
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
 

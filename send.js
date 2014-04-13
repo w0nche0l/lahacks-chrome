@@ -35,7 +35,6 @@ port.postMessage({request: "userdata"});
 port.onMessage.addListener(function(response) {
   console.log(response);
   //post stuff here
-
 });
 
 
