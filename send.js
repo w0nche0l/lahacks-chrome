@@ -2,7 +2,7 @@
 (function(){
   "use strict";
   //var serverUrl = "http://localhost:3000";
-  var serverUrl = "https://protected-temple-7151.herokuapp.com";
+  var serverUrl = "http://wormhole-api.cloudapp.net";
   var qs        = utils.getUrlVars();
 
   var port = chrome.runtime.connect({name: "data"});

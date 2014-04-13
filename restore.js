@@ -3,7 +3,7 @@
   "use strict";
 
   var qs        = utils.getUrlVars(),
-      serverUrl = "https://protected-temple-7151.herokuapp.com",
+      serverUrl = "http://wormhole-api.cloudapp.net",
       getWorkspaceData;
 
   getWorkspaceData = function(cb){
