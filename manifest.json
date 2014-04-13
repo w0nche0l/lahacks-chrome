@@ -27,6 +27,6 @@
 
   "content_security_policy": "script-src 'self' https://www.rdio.com https://kloudless-static-assets.s3-us-west-2.amazonaws.com; object-src 'self'",
   "externally_connectable": {
-      "matches": ["https://protected-temple-7151.herokuapp.com/*"]
+      "matches": ["http://wormhole-api.cloudapp.net/*"]
   }
 }

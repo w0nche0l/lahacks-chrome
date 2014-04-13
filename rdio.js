@@ -3,10 +3,11 @@
   "use strict";
 
   var queryString = utils.getUrlVars(),
-      rdioReady;
+      rdioReady,
+      baseUrl = "http://wormhole-api.cloudapp.net";
 
   chrome.tabs.create({
-    url: "https://protected-temple-7151.herokuapp.com/rdio_login.html",
+    url: baseUrl + "/rdio_login.html",
     active: false
   }, function(tabInfo){
     chrome.runtime.onMessageExternal.addListener(function(msg, sender, cb){
