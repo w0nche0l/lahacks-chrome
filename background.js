@@ -66,7 +66,6 @@ var loginListener = function(request, sender, sendResponse) {
     }
   }
   else if(request.requestType === "close"){
-
     chrome.windows.getAll({populate: true}, function(windowArr){
         console.log(windowArr); 
         for(var i = 0; i < windowArr.length; ++i){
@@ -87,7 +86,7 @@ var loginListener = function(request, sender, sendResponse) {
 }
 
 
-var loadTabs = function(){
+var loadTabs = function(){ 
   console.log("loading the tabs");
   chrome.windows.create({url: tabArray}, function(newWindow){
     chrome.windows.update(newWindow.id, { state: "maximized" })
@@ -111,7 +110,8 @@ chrome.runtime.onConnect.addListener(function(port) {
               continue;
             tabData[count] = {
               "url": windowArr[i].tabs[j].url,
-              "favicon": windowArr[i].tabs[j].favIconUrl
+              "favicon": windowArr[i].tabs[j].favIconUrl,
+              "title": windowArr[i].tabs[j].title
             };
             count++;
           }
