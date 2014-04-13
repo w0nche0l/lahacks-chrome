@@ -74,4 +74,9 @@ var loginListener = function(request, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
 
+chrome.runtime.onMessageExternal.addListener(function(msg, sender, cb){
+  if (msg.hasOwnProperty("type") && msg.type === "close"){
+    chrome.tabs.remove(sender.tab.id);
+  }
+});
 
