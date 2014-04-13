@@ -37,21 +37,21 @@ function setUpListeners(){
 	}
 }
 
-var loginService = function(sitedata, index){
-  document.querySelector(websitedata[index].idfield).value = sitedata.savedid;
-  document.querySelector(websitedata[index].pwfield).value = sitedata.savedpw;
-  console.log(document.querySelector(websitedata[index].idfield).value);
-  console.log(document.querySelector(websitedata[index].pwfield).value);
+// var loginService = function(sitedata, index){
+//   document.querySelector(websitedata[index].idfield).value = sitedata.savedid;
+//   document.querySelector(websitedata[index].pwfield).value = sitedata.savedpw;
+//   console.log(document.querySelector(websitedata[index].idfield).value);
+//   console.log(document.querySelector(websitedata[index].pwfield).value);
 
-  document.querySelector(websitedata[index].submit).click();
-}
+//   document.querySelector(websitedata[index].submit).click();
+// }
 
-var login = function(index){
-  chrome.runtime.sendMessage({requestType: 'login', site: websitedata[index].reg}, function(response) {
-    console.log(response);
-    if(response.savedid != null)
-      loginService(response, index);
-  });
-}
+// var login = function(index){
+//   chrome.runtime.sendMessage({requestType: 'login', site: websitedata[index].reg}, function(response) {
+//     console.log(response);
+//     if(response.savedid != null)
+//       loginService(response, index);
+//   });
+// }
 
 setUpListeners();

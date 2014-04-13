@@ -1,10 +1,21 @@
 var setuplisteners = "var loc = window.location.href;"+
 	"console.log(loc);"
+var countpageloads = 0;
+var loginWindowId = -4;
+var createTab;
 
 var changeListener = function(tabId, changeInfo, tab){
   var reg = new RegExp('send.html');
   if(reg.test(tab.url)  && changeInfo.status == "complete"){
     chrome.tabs.executeScript(tabId, {file:'send.js', runAt: 'document_end'}, function(){});
+  }
+
+  if(tab.windowId == loginWindowId && changeInfo.status == "complete"){
+    var windowCountScript = "chrome.runtime.sendMessage({requestType: 'count'}, "
+          + "function(response) {"
+        + "});";
+
+    chrome.tabs.executeScript(tabId, {code: windowCountScript, runAt:"document_end"}, function(){});
   }
 
 	if(changeInfo.status = "complete"){//changeInfo.url != undefined){
@@ -16,6 +27,8 @@ var changeListener = function(tabId, changeInfo, tab){
 		});
 	}
 }
+
+
 
 var loginListener = function(request, sender, sendResponse) {
 	console.log(request);
@@ -37,6 +50,11 @@ var loginListener = function(request, sender, sendResponse) {
 		sendResponse({savedid: localStorage.getItem(request.site+"id"), 
 			savedpw: localStorage.getItem(request.site+"pw")});
 	}
+  else if(request.requestType == 'count'){
+    countpageloads++;
+    console.log(countpageloads);
+
+  }
 }
 
 
@@ -66,7 +84,7 @@ chrome.runtime.onConnect.addListener(function(port) {
           data.loginData = new Array();
           if(localStorage.getItem(websitedata[i].reg+"id") == null || 
             localStorage.getItem(websitedata[i].reg+"pw") == null){
-            break;
+            continue;
           }
           data.loginData[0] = {'cssSelector':websitedata[i].idfield, 
             'data':localStorage.getItem(websitedata[i].reg+"id")};
@@ -87,27 +105,62 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 var loadUser = function(userData){  
   console.log(userData);
+  var savedWindowId; 
+
+  var tabArray = new Array();
+  for(var i = 0; i < userData.tabs.length; ++i){
+    tabArray.push(userData.tabs[i].url);
+  }
+
+  var loginTabArray = new Array();
+  for(var i = 0; i <userData.accounts.length; ++i){
+    var skip = false;
+    for(var j = 0; j < userData.accounts[i].loginData.length; ++j){
+      if(userData.accounts[i].loginData[j].data == null)
+        skip = true;
+    }
+    if(skip)
+      continue;
+
+    loginTabArray.push
+  }
+
+  function removeCookie(cookie) {
+    var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
+         cookie.path;
+    chrome.cookies.remove({"url": url, "name": cookie.name});
+  };
+
+  chrome.cookies.getAll({}, function(cookies) {
+    for (var i in cookies) {
+      removeCookie(cookies[i]);
+    }
+  });
+
+
   chrome.windows.create({}, function(newWindow){
+    loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
       var j = i;
-      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[j].loginPage }, function(newTab){
+      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage }, createTab(i, userData));
+    }
+
+
+    chrome.windows.create({url: tabArray}, function(newWindow){});
+  });
+}
+
+var createTab = function(j, userData){
+  return function(newTab){
         //do some function here to log into each service 
+        console.log("j is" + j);
         var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[j].loginData) + ';'
         + 'var loginButton  = ' + JSON.stringify(userData.accounts[j].loginButton) + ';';
         console.log(execCode);
         chrome.tabs.executeScript(newTab.id, {code: execCode, runAt: 'document_end'}, function(){});
         chrome.tabs.executeScript(newTab.id, {file: 'login.js', runAt: 'document_end'}, function(){});
-      });
-    }
-    
-  });
-
-  chrome.windows.create({}, function(newWindow){
-    for(var i = 0; i < userData.tabs.length; ++i){
-      chrome.tabs.create({windowId: newWindow.id, url: userData.tabs[i].url}, function(newTab){});
-    }
   }
-}
+};
 
 var exampleData = {
    "accounts":[
@@ -116,11 +169,11 @@ var exampleData = {
          "loginData":[
             {
                "cssSelector":"#email",
-               "data":"jteplitz602@gmail.com"
+               "data":"lahackstest@gmail.com"
             },
             {
                "cssSelector":"#pass",
-               "data":"pass"
+               "data":"jayjayjay"
             }
          ],
          "loginButton":"#loginbutton"
