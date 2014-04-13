@@ -3,6 +3,9 @@ var setuplisteners = "var loc = window.location.href;"+
 var countpageloads = 0;
 var loginWindowId = -4;
 var createTab;
+var numTabs; 
+var tabArray;
+var receievedFromTab = {};
 
 var changeListener = function(tabId, changeInfo, tab){
   var reg = new RegExp('send.html');
@@ -51,9 +54,19 @@ var loginListener = function(request, sender, sendResponse) {
 			savedpw: localStorage.getItem(request.site+"pw")});
 	}
   else if(request.requestType == 'count'){
-    countpageloads++;
     console.log(countpageloads);
-
+    console.log("tab " + sender.tab.id + "reporting");
+    if(!receievedFromTab[sender.tab.id]){
+      countpageloads++;
+      receievedFromTab[sender.tab.id] = true;
+    }
+    if(countpageloads == numTabs){
+      chrome.windows.create({url: tabArray}, function(newWindow){
+        chrome.windows.update(newWindow.id, { state: "maximized" })
+      });
+      countpageloads++;
+      chrome.windows.remove(loginWindowId);
+    }
   }
 }
 
@@ -107,7 +120,7 @@ var loadUser = function(userData){
   console.log(userData);
   var savedWindowId; 
 
-  var tabArray = new Array();
+  tabArray = new Array();
   for(var i = 0; i < userData.tabs.length; ++i){
     tabArray.push(userData.tabs[i].url);
   }
@@ -125,6 +138,9 @@ var loadUser = function(userData){
     loginTabArray.push
   }
 
+  numTabs = userData.accounts.length;
+  console.log("numtabs:"+numTabs);
+
   function removeCookie(cookie) {
     var url = "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain +
          cookie.path;
@@ -139,20 +155,19 @@ var loadUser = function(userData){
 
 
   chrome.windows.create({}, function(newWindow){
+    chrome.windows.update(newWindow.id, { state: "maximized" })
     loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
       var j = i;
-      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage }, createTab(i, userData));
+      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage}, createTab(i, userData));
     }
-
-
-    chrome.windows.create({url: tabArray}, function(newWindow){});
   });
 }
 
 var createTab = function(j, userData){
   return function(newTab){
         //do some function here to log into each service 
+        receievedFromTab[newTab.id] = false;
         console.log("j is" + j);
         var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[j].loginData) + ';'
         + 'var loginButton  = ' + JSON.stringify(userData.accounts[j].loginButton) + ';';
@@ -195,7 +210,7 @@ var exampleData = {
    ],
    "tabs":[
       {
-         "url":"http://tumblr.com",
+         "url":"http://facebook.com",
          "favicon":"favicon_url"
       }
    ]
