@@ -4,7 +4,7 @@ var websitedata = [
 		idfield: "#email",
 		pwfield: "#pass",
 		submit: "#loginbutton",
-    loginpage: "https://www.facebook.com/login.php"
+    	loginpage: "https://www.facebook.com/login.php"
 	},
 	{
 		reg:"google.com",

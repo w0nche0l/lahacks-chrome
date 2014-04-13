@@ -32,58 +32,35 @@ var loginListener = function(request, sender, sendResponse) {
 		sendResponse({savedid: localStorage.getItem(request.site+"id"), 
 			savedpw: localStorage.getItem(request.site+"pw")});
 	}
-}
-
-// {
-//    "accounts"
-//       {
-//          "loginPage":"https://facebook.com/login.ph",
-//          "loginData"
-//             {
-//                "cssSelector":"#email",
-//                "data":"jteplitz602@gmail.com"
-//             },
-//             {
-//                "cssSelector":"#pass",
-//                "data":"pass"
-//             }
-//          ],
-//          "loginButton":"#login input"
-//       }
-//    ],
-//    "tabs"
-//       {
-//          "url":"facebook.com",
-//          "favicon":"favicon_url"
-//       },
-//       {
-//          "url":"google.com",
-//          "favicon":"google_favicon_url"
-//       }
-//    ]
-// }
-
-
-var saveWorkspace= function(index){
-  chrome.windows.getAll(function(windowArr){
-
-    var windowData = new Array();
-    for(var i = 0; i < windowArr.length; ++i){
-      windowData[i] = new Array();
-      for(var j = 0; j < windowArr[i].tabs.length; ++j){
-        windowData[i][j] = {
-          "url": windowArr[i].tabs[j].url,
-          "favicon": windowArr[i].tabs[j].favIconUrl
-        };
+  else if(request.requestType == 'send'){
+    chrome.windows.getAll(function(windowArr){
+      var windowData = new Array();
+      for(var i = 0; i < windowArr.length; ++i){
+        windowData[i] = new Array();
+        for(var j = 0; j < windowArr[i].tabs.length; ++j){
+          windowData[i][j] = {
+            "url": windowArr[i].tabs[j].url,
+            "favicon": windowArr[i].tabs[j].favIconUrl
+          };
+        }
+        //chrome.windows.remove(windowArr[i].id);
       }
-      chrome.windows.remove(windowArr[i].id);
-    }
-    //post request to add saved tabs 
+      var accountsData = new Array();
+      for(var i = 0; i < websitedata.length; ++i){
+        accountsData[i].loginpage = websitedata[i].loginpage;
+        accountsData[i].loginData = new Array();
+        accountsData[i].loginData[0] = {'cssSelector':websitedata[i].idfield, 
+          'data':localStorage.getItem(websitedata[i].reg+"id")};
+        accountsData[i].loginData[1] = {'cssSelector':websitedata[i].pwfield, 
+          'data':localStorage.getItem(websitedata[i].reg+"pw")};
+        accountsData[i].loginButton = websitedata[i].submit;
+      }
 
-
-    
-  });
+      sendResponse({'accounts' : accountsData, 'tabs' : windowData})
+    });
+  }
 }
+
 
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
