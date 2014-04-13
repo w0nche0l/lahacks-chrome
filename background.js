@@ -17,7 +17,7 @@ var changeListener = function(tabId, changeInfo, tab){
     var windowCountScript = "chrome.runtime.sendMessage({requestType: 'count'}, "
           + "function(response) {"
         + "});";
-
+    
     chrome.tabs.executeScript(tabId, {code: windowCountScript, runAt:"document_end"}, function(){});
   }
 
@@ -68,6 +68,11 @@ var loginListener = function(request, sender, sendResponse) {
       chrome.windows.remove(loginWindowId);
     }
   }
+  else if(request.requestType === "restore"){
+    loadUser(request.requestData);
+    console.log("Restoring");
+    sendResponse({farewell:"goodbye restoration"});    
+  }
 }
 
 
@@ -93,7 +98,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         for(var i = 0; i < websitedata.length; ++i){
           
           var data = {};
-          data.loginpage = websitedata[i].loginpage;
+          data.loginPage = websitedata[i].loginpage;
           data.loginData = new Array();
           if(localStorage.getItem(websitedata[i].reg+"id") == null || 
             localStorage.getItem(websitedata[i].reg+"pw") == null){
@@ -125,19 +130,6 @@ var loadUser = function(userData){
     tabArray.push(userData.tabs[i].url);
   }
 
-  var loginTabArray = new Array();
-  for(var i = 0; i <userData.accounts.length; ++i){
-    var skip = false;
-    for(var j = 0; j < userData.accounts[i].loginData.length; ++j){
-      if(userData.accounts[i].loginData[j].data == null)
-        skip = true;
-    }
-    if(skip)
-      continue;
-
-    loginTabArray.push
-  }
-
   numTabs = userData.accounts.length;
   console.log("numtabs:"+numTabs);
 
@@ -158,7 +150,6 @@ var loadUser = function(userData){
     chrome.windows.update(newWindow.id, { state: "maximized" })
     loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
-      var j = i;
       chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage}, createTab(i, userData));
     }
   });

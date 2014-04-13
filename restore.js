@@ -23,5 +23,14 @@
 
   getWorkspaceData(function(err, data){
     console.log("got data", err, data);
+    if(err){
+      console.log("error:" + err);
+    }
+    else{
+      chrome.runtime.sendMessage({requestType: 'restore', requestData:data}, 
+      function(response) {
+        console.log(response.farewell);
+      });  
+    }
   });
 }());
