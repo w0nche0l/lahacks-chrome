@@ -13,9 +13,15 @@
                                                "\", version=\"1\""};
     utils.makeRequest(url, "POST", response, headers, function(err, res){
       if (err){
-        return console.log("SHIIT", err);
+        console.log("SHIIT", err);
       }
-        return console.log("Success", err, res);
+        console.log("Success", err, res);
+
+      chrome.runtime.sendMessage({requestType: 'close'}, 
+        function(response) {
+        console.log(response.farewell);
+      });
+
     });
   });
 }());
