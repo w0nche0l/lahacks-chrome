@@ -74,7 +74,7 @@ var loginListener = function(request, sender, sendResponse) {
               chrome.tabs.remove(windowArr[i].tabs[j].id);
           }
 
-          chrome.windows.remove(windowArr[i].id);
+          //chrome.windows.remove(windowArr[i].id);
         }
     });
   }
