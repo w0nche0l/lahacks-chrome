@@ -34,7 +34,8 @@ var port = chrome.runtime.connect({name: "data"});
 port.postMessage({request: "userdata"});
 port.onMessage.addListener(function(response) {
   console.log(response);
-  //post stuff here
+  //POST stuff here
+  
 });
 
 

@@ -83,7 +83,12 @@ var loadUser = function(userData){
   chrome.windows.create(null, function(newWindow){
     for(var i = 0;  i < userData.accounts.length; ++i){
       chrome.tabs.create({windowId:newWindow.id, url: userData.accounts[i].loginPage}, function(newTab){
-        //do some function here
+        //do some function here to log into each service 
+        var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[i].loginData) + ';'+
+          'var loginButton  = ' + userData.accounts[i].loginButton + ';';
+        chrome.tabs.executeScript(newTab.id, {code: execCode}, function());
+        chrome.tabs.executeScript(newTab.id, {file: 'login.js'}, function(){});
+
       });
     }
 
