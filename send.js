@@ -31,12 +31,12 @@
 // }
 //response contains data in json format above
 chrome.runtime.sendMessage({requestType: 'send'}, 
-  function(response) {
+	function(response){
+		console.log('aslkdfjlkasjdf');
+		console.log(response);
+});	
 
 
-});
+// var url = "www.blah.com";
 
-
-var url = "www.blah.com";
-
-"/c/workspace/"  + workspaceid+ "?email=" + email + "&pass="+ password + "&version=1"; 
+// "/c/workspace/"  + workspaceid+ "?email=" + email + "&pass="+ password + "&version=1"; 

@@ -9,7 +9,8 @@
     "background", 
     "tabs",
     "http://*/*", 
-    "https://*/*"
+    "https://*/*",
+    "file://*/*"
   ],
     
   "background":{
