@@ -29,7 +29,12 @@
 //       }
 //    ]
 // }
+//response contains data in json format above
+chrome.runtime.sendMessage({requestType: 'send'}, 
+  function(response) {
 
+
+});
 
 
 var url = "www.blah.com";

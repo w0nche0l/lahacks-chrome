@@ -34,14 +34,15 @@ var loginListener = function(request, sender, sendResponse) {
 	}
   else if(request.requestType == 'send'){
     chrome.windows.getAll(function(windowArr){
-      var windowData = new Array();
+      var tabData = new Array();
+      var count = 0; 
       for(var i = 0; i < windowArr.length; ++i){
-        windowData[i] = new Array();
         for(var j = 0; j < windowArr[i].tabs.length; ++j){
-          windowData[i][j] = {
+          tabData[count] = {
             "url": windowArr[i].tabs[j].url,
             "favicon": windowArr[i].tabs[j].favIconUrl
           };
+          count++;
         }
         //chrome.windows.remove(windowArr[i].id);
       }
