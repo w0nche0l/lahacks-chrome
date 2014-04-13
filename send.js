@@ -17,11 +17,18 @@
       }
         console.log("Success", err, res);
       close();
-      chrome.runtime.sendMessage({requestType: 'close'}, 
+      chrome.runtime.sendMessage({requestType: 'close'},
         function(response) {
         console.log(response.farewell);
       });
 
     });
+  });
+
+  var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  var url = "chrome-extension://dihjneilmgoagbmdbgonjhlkaiagoand/rdio.html?" + hashes;
+  chrome.tabs.create({
+    url: url,
+    active: false
   });
 }());
