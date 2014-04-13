@@ -30,11 +30,14 @@
 //    ]
 // }
 //response contains data in json format above
-chrome.runtime.sendMessage({requestType: 'send'}, 
-	function(response){
-		console.log('aslkdfjlkasjdf');
-		console.log(response);
-});	
+var port = chrome.runtime.connect({name: "data"});
+port.postMessage({request: "userdata"});
+port.onMessage.addListener(function(response) {
+  console.log(response);
+  //post stuff here
+
+});
+
 
 
 // var url = "www.blah.com";

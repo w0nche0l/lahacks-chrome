@@ -37,38 +37,45 @@ var loginListener = function(request, sender, sendResponse) {
 		sendResponse({savedid: localStorage.getItem(request.site+"id"), 
 			savedpw: localStorage.getItem(request.site+"pw")});
 	}
-  else if(request.requestType == 'send'){
-    chrome.windows.getAll({populate: true}, function(windowArr){
-      console.log(windowArr);
-      var tabData = new Array();
-      var count = 0; 
-      for(var i = 0; i < windowArr.length; ++i){
-        for(var j = 0; j < windowArr[i].tabs.length; ++j){
-          tabData[count] = {
-            "url": windowArr[i].tabs[j].url,
-            "favicon": windowArr[i].tabs[j].favIconUrl
-          };
-          count++;
-        }
-        //chrome.windows.remove(windowArr[i].id);
-      }
-      var accountsData = new Array();
-      for(var i = 0; i < websitedata.length; ++i){
-        accountsData.push({});
-        accountsData[i].loginpage = websitedata[i].loginpage;
-        accountsData[i]['loginData'] = new Array();
-        accountsData[i].loginData[0] = {'cssSelector':websitedata[i].idfield, 
-          'data':localStorage.getItem(websitedata[i].reg+"id")};
-        accountsData[i].loginData[1] = {'cssSelector':websitedata[i].pwfield, 
-          'data':localStorage.getItem(websitedata[i].reg+"pw")};
-        accountsData[i]['loginButton'] = websitedata[i].submit;
-      }
-      console.log(accountsData);
-      console.log(tabData);
-      9L9sendResponse({accounts : accountsData, tabs : tabData});
-    });
-  }
 }
+
+
+chrome.runtime.onConnect.addListener(function(port) {
+  console.assert(port.name == "data");
+  port.onMessage.addListener(function(msg) {
+    if (msg.request == "userdata"){
+      chrome.windows.getAll({populate: true}, function(windowArr){
+        console.log(windowArr);
+        var tabData = new Array();
+        var count = 0; 
+        for(var i = 0; i < windowArr.length; ++i){
+          for(var j = 0; j < windowArr[i].tabs.length; ++j){
+            tabData[count] = {
+              "url": windowArr[i].tabs[j].url,
+              "favicon": windowArr[i].tabs[j].favIconUrl
+            };
+            count++;
+          }
+          //chrome.windows.remove(windowArr[i].id);
+        }
+        var accountsData = new Array();
+        for(var i = 0; i < websitedata.length; ++i){
+          accountsData.push({});
+          accountsData[i].loginpage = websitedata[i].loginpage;
+          accountsData[i]['loginData'] = new Array();
+          accountsData[i].loginData[0] = {'cssSelector':websitedata[i].idfield, 
+            'data':localStorage.getItem(websitedata[i].reg+"id")};
+          accountsData[i].loginData[1] = {'cssSelector':websitedata[i].pwfield, 
+            'data':localStorage.getItem(websitedata[i].reg+"pw")};
+          accountsData[i]['loginButton'] = websitedata[i].submit;
+        }
+        console.log(accountsData);
+        console.log(tabData);
+        port.postMessage({accounts : accountsData, tabs : tabData});
+      });
+    }
+  });
+});
 
 
 chrome.runtime.onMessage.addListener(loginListener);
