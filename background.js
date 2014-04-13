@@ -60,14 +60,20 @@ chrome.runtime.onConnect.addListener(function(port) {
         }
         var accountsData = new Array();
         for(var i = 0; i < websitedata.length; ++i){
-          accountsData.push({});
-          accountsData[i].loginpage = websitedata[i].loginpage;
-          accountsData[i]['loginData'] = new Array();
-          accountsData[i].loginData[0] = {'cssSelector':websitedata[i].idfield, 
+          
+          var data = {};
+          data.loginpage = websitedata[i].loginpage;
+          data.loginData = new Array();
+          if(localStorage.getItem(websitedata[i].reg+"id") == null || 
+            localStorage.getItem(websitedata[i].reg+"pw") == null){
+            break;
+          }
+          data.loginData[0] = {'cssSelector':websitedata[i].idfield, 
             'data':localStorage.getItem(websitedata[i].reg+"id")};
-          accountsData[i].loginData[1] = {'cssSelector':websitedata[i].pwfield, 
+          data.loginData[1] = {'cssSelector':websitedata[i].pwfield, 
             'data':localStorage.getItem(websitedata[i].reg+"pw")};
-          accountsData[i]['loginButton'] = websitedata[i].submit;
+          data.loginButton = websitedata[i].submit;
+          accountsData.push(data);
         }
         console.log(accountsData);
         console.log(tabData);
@@ -80,21 +86,22 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 
 var loadUser = function(userData){
-  chrome.windows.create(null, function(newWindow){
+  chrome.windows.create({}, function(newWindow){
     for(var i = 0;  i < userData.accounts.length; ++i){
       chrome.tabs.create({windowId:newWindow.id, url: userData.accounts[i].loginPage}, function(newTab){
         //do some function here to log into each service 
-        var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[i].loginData) + ';'+
-          'var loginButton  = ' + userData.accounts[i].loginButton + ';';
-        chrome.tabs.executeScript(newTab.id, {code: execCode}, function());
+        var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[i].loginData) + ';'+ 'var loginButton  = ' + userData.accounts[i].loginButton + ';';
+        console.log(execCode);
+        chrome.tabs.executeScript(newTab.id, {code: execCode}, function(){});
         chrome.tabs.executeScript(newTab.id, {file: 'login.js'}, function(){});
-
       });
     }
 
     for(var i = 0; i < userData.tabs.length; ++i){
       chrome.tabs.create({windowId: newWindow.id, url: userData.tabs[i].url}, function(newTab){});
     }
+
+    newWindow.close()
   });
 }
 
@@ -119,34 +126,6 @@ var exampleData = {
       {
          "url":"http://tumblr.com",
          "favicon":"favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
-      },
-      {
-         "url":"http://qwantz.com",
-         "favicon":"google_favicon_url"
       }
    ]
 };

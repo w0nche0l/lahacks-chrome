@@ -30,8 +30,8 @@ function setUpListeners(){
 		if(result == true){
 			console.log("regexp stuff found!");
       if(document.querySelector(websitedata[i].submit) != null){
-        login(i);
-			 setUpListener(websitedata[i].idfield, websitedata[i].pwfield, websitedata[i].submit, websitedata[i].reg);
+        //login(i);
+			  setUpListener(websitedata[i].idfield, websitedata[i].pwfield, websitedata[i].submit, websitedata[i].reg);
       }
 		}
 	}
