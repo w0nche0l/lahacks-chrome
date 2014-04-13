@@ -85,24 +85,28 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 
 
-var loadUser = function(userData){
+var loadUser = function(userData){  
+  console.log(userData);
   chrome.windows.create({}, function(newWindow){
     for(var i = 0;  i < userData.accounts.length; ++i){
-      chrome.tabs.create({windowId:newWindow.id, url: userData.accounts[i].loginPage}, function(newTab){
+      var j = i;
+      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[j].loginPage }, function(newTab){
         //do some function here to log into each service 
-        var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[i].loginData) + ';'+ 'var loginButton  = ' + userData.accounts[i].loginButton + ';';
+        var execCode = 'var formsData = ' + JSON.stringify(userData.accounts[j].loginData) + ';'
+        + 'var loginButton  = ' + JSON.stringify(userData.accounts[j].loginButton) + ';';
         console.log(execCode);
-        chrome.tabs.executeScript(newTab.id, {code: execCode}, function(){});
-        chrome.tabs.executeScript(newTab.id, {file: 'login.js'}, function(){});
+        chrome.tabs.executeScript(newTab.id, {code: execCode, runAt: 'document_end'}, function(){});
+        chrome.tabs.executeScript(newTab.id, {file: 'login.js', runAt: 'document_end'}, function(){});
       });
     }
+    
+  });
 
+  chrome.windows.create({}, function(newWindow){
     for(var i = 0; i < userData.tabs.length; ++i){
       chrome.tabs.create({windowId: newWindow.id, url: userData.tabs[i].url}, function(newTab){});
     }
-
-    newWindow.close()
-  });
+  }
 }
 
 var exampleData = {
@@ -119,7 +123,21 @@ var exampleData = {
                "data":"pass"
             }
          ],
-         "loginButton":"#login input"
+         "loginButton":"#loginbutton"
+      },
+      {
+        "loginPage":"https://accounts.google.com/ServiceLogin?sacu=1",
+        "loginData":[
+            {
+               "cssSelector":"#Email",
+               "data":"lahackstest@gmail.com"
+            },
+            {
+               "cssSelector":"#Passwd",
+               "data":"ddddddddd"
+            }
+        ],
+        "loginButton":"#signIn"
       }
    ],
    "tabs":[
@@ -140,4 +158,4 @@ chrome.runtime.onMessageExternal.addListener(function(msg, sender, cb){
   }
 });
 
-//loadUser(exampleData);
+loadUser(exampleData);

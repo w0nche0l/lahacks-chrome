@@ -11,7 +11,7 @@ var websitedata = [
 		idfield: "#Email",
 		pwfield: "#Passwd",
 		submit: "#signIn",
-    	loginpage: "https://accounts.google.com"
+    	loginpage: "https://accounts.google.com/ServiceLogin?sacu=1"
 	},
   	{
 	    reg: "rdio.com",

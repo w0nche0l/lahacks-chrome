@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "NAMEOFHACK Chrome Extension",
-  "description": "This is a chrome extension to help with NAMEOFHACK",
+  "name": "Wormhole Chrome Extension",
+  "description": "This is a chrome extension for Wormhole",
   "version": "1.1",
 
   "permissions": [
