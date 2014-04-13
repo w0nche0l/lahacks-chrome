@@ -2,6 +2,7 @@ var setuplisteners = "var loc = window.location.href;"+
 	"console.log(loc);"
 var countpageloads = 0;
 var loginWindowId = -4;
+var spinnerWindowId = -5;
 var createTab;
 var numTabs; 
 var tabArray;
@@ -17,7 +18,7 @@ var changeListener = function(tabId, changeInfo, tab){
     var windowCountScript = "chrome.runtime.sendMessage({requestType: 'count'}, "
           + "function(response) {"
         + "});";
-
+    
     chrome.tabs.executeScript(tabId, {code: windowCountScript, runAt:"document_end"}, function(){});
   }
 
@@ -61,15 +62,26 @@ var loginListener = function(request, sender, sendResponse) {
       receievedFromTab[sender.tab.id] = true;
     }
     if(countpageloads == numTabs){
-      chrome.windows.create({url: tabArray}, function(newWindow){
-        chrome.windows.update(newWindow.id, { state: "maximized" })
-      });
-      countpageloads++;
-      chrome.windows.remove(loginWindowId);
+      loadTabs();
     }
+  }
+  else if(request.requestType === "restore"){
+    loadUser(request.requestData);
+    console.log("Restoring");
+    sendResponse({farewell:"goodbye restoration"});    
   }
 }
 
+
+var loadTabs = function(){
+  console.log("loading the tabs");
+  chrome.windows.create({url: tabArray}, function(newWindow){
+    chrome.windows.update(newWindow.id, { state: "maximized" })
+  });
+  countpageloads++;
+  chrome.windows.remove(loginWindowId);
+  chrome.windows.remove(spinnerWindowId);
+}
 
 chrome.runtime.onConnect.addListener(function(port) {
   console.assert(port.name == "data");
@@ -81,6 +93,8 @@ chrome.runtime.onConnect.addListener(function(port) {
         var count = 0; 
         for(var i = 0; i < windowArr.length; ++i){
           for(var j = 0; j < windowArr[i].tabs.length; ++j){
+            if(windowArr[i].tabs[j].url.indexOf("chrome-extension://")== 0)
+              continue;
             tabData[count] = {
               "url": windowArr[i].tabs[j].url,
               "favicon": windowArr[i].tabs[j].favIconUrl
@@ -93,7 +107,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         for(var i = 0; i < websitedata.length; ++i){
           
           var data = {};
-          data.loginpage = websitedata[i].loginpage;
+          data.loginPage = websitedata[i].loginpage;
           data.loginData = new Array();
           if(localStorage.getItem(websitedata[i].reg+"id") == null || 
             localStorage.getItem(websitedata[i].reg+"pw") == null){
@@ -125,18 +139,10 @@ var loadUser = function(userData){
     tabArray.push(userData.tabs[i].url);
   }
 
-  var loginTabArray = new Array();
-  for(var i = 0; i <userData.accounts.length; ++i){
-    var skip = false;
-    for(var j = 0; j < userData.accounts[i].loginData.length; ++j){
-      if(userData.accounts[i].loginData[j].data == null)
-        skip = true;
-    }
-    if(skip)
-      continue;
-
-    loginTabArray.push
-  }
+  chrome.windows.create({url: "/loading.html"}, function(newWindow){
+    spinnerWindowId = newWindow.id;
+    chrome.windows.update(newWindow.id, { state: "maximized" });
+  })
 
   numTabs = userData.accounts.length;
   console.log("numtabs:"+numTabs);
@@ -154,13 +160,13 @@ var loadUser = function(userData){
   });
 
 
-  chrome.windows.create({}, function(newWindow){
-    chrome.windows.update(newWindow.id, { state: "maximized" })
+  chrome.windows.create({focused: false}, function(newWindow){
     loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
-      var j = i;
-      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage}, createTab(i, userData));
-    }
+      chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage, active:false}, createTab(i, userData));
+    } 
+    if(numTabs == 0)
+      loadTabs();
   });
 }
 
@@ -176,46 +182,6 @@ var createTab = function(j, userData){
         chrome.tabs.executeScript(newTab.id, {file: 'login.js', runAt: 'document_end'}, function(){});
   }
 };
-
-var exampleData = {
-   "accounts":[
-      {
-         "loginPage":"https://facebook.com/login.php",
-         "loginData":[
-            {
-               "cssSelector":"#email",
-               "data":"lahackstest@gmail.com"
-            },
-            {
-               "cssSelector":"#pass",
-               "data":"jayjayjay"
-            }
-         ],
-         "loginButton":"#loginbutton"
-      },
-      {
-        "loginPage":"https://accounts.google.com/ServiceLogin?sacu=1",
-        "loginData":[
-            {
-               "cssSelector":"#Email",
-               "data":"lahackstest@gmail.com"
-            },
-            {
-               "cssSelector":"#Passwd",
-               "data":"ddddddddd"
-            }
-        ],
-        "loginButton":"#signIn"
-      }
-   ],
-   "tabs":[
-      {
-         "url":"http://facebook.com",
-         "favicon":"favicon_url"
-      }
-   ]
-};
-
 
 chrome.runtime.onMessage.addListener(loginListener);
 chrome.tabs.onUpdated.addListener(changeListener);
