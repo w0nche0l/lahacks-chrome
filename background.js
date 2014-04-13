@@ -139,6 +139,11 @@ var loadUser = function(userData){
     tabArray.push(userData.tabs[i].url);
   }
 
+  chrome.windows.create({url: "/loading.html"}, function(newWindow){
+    spinnerWindowId = newWindow.id;
+    chrome.windows.update(newWindow.id, { state: "maximized" });
+  })
+
   numTabs = userData.accounts.length;
   console.log("numtabs:"+numTabs);
 
@@ -156,7 +161,6 @@ var loadUser = function(userData){
 
 
   chrome.windows.create({focused: false}, function(newWindow){
-    chrome.windows.update(newWindow.id, { state: "maximized" })
     loginWindowId = newWindow.id;
     for(var i = 0;  i < userData.accounts.length; ++i){
       chrome.tabs.create({ windowId : newWindow.id, url : userData.accounts[i].loginPage, active:false}, createTab(i, userData));

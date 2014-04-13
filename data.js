@@ -25,5 +25,12 @@ var websitedata = [
   		pwfield: 'input[name="passwd"]',
   		submit: 'button[type="submit"]', 
   		loginpage:"www.reddit.com"
+  	},
+  	{
+  		reg: 'github.com',
+  		idfield: '#login_field',
+  		pwfield: '#password',
+  		submit:'input[type="submit"]',
+  		loginpage: "https://github.com/login"
   	}
 ]
