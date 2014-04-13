@@ -5,6 +5,7 @@
 
   onload = function(){
     var formString = "<form method='POST' action='https://protected-temple-7151.herokuapp.com/u/kloudless' style='display: none;'>" +
+    //var formString = "<form method='POST' action='http://localhost:3000/u/kloudless' style='display: none;'>" +
                    "<input type='hidden' name='email' value=\"" + queryString.email   + "\">" +
                    "<input type='hidden' name='pass' value=\"" + queryString.pass     + "\">"+
                    "<input type='hidden' name='type' value=\"init\">"+
